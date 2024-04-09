@@ -43,12 +43,8 @@ const path = require('path');
 const app = express();
 const port = 3000;
 
-// Middleware to parse JSON bodies
 app.use(express.json());
-
-// Route to count words in a text file
 app.post('/count-words', (req, res) => {
-
   fs.readFile('data.txt', 'utf8', (err, data) => {
     if (err) {
       return res.status(500).send({ sts: false, message: 'Error reading the file' });
