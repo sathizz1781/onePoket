@@ -1,9 +1,62 @@
+// 1. creating server with node na d expressJs
 const express = require('express');
 const app = express();
 const port = 3000;
 
-app.get('/', (req, res) => {
+app.get('*', (req, res) => {
   res.send('Hello, World!');
+});
+
+app.listen(port, () => {
+  console.log(`Server listening at http://localhost:${port}`);
+});
+
+//2. Calculating sum of array while passing a array as a request in json format {numbers:[1,2,3,4,5]} 
+const express = require('express');
+const app = express();
+const port = 3000;
+
+app.use(express.json());
+app.post('/calculate', (req, res) => {
+  const { numbers } = req.body;
+  if (!Array.isArray(numbers)) {
+    return res.status(400).send({sts:false,message:'Input must be an array'});
+  }
+  let sum = 0;
+  for (let num of numbers) {
+    if (typeof num !== 'number') {
+      return res.status(400).send({sts:false,message:'Array must only contain numbers'});
+    }
+    sum += num;
+  }
+  res.send({sts:true,message:`The sum of the numbers array is ${sum}`});
+});
+
+app.listen(port, () => {
+  console.log(`Server listening at http://localhost:${port}`);
+});
+
+// 3. Reading a txt file from same directory
+const express = require('express');
+const fs = require('fs');
+const path = require('path');
+const app = express();
+const port = 3000;
+
+// Middleware to parse JSON bodies
+app.use(express.json());
+
+// Route to count words in a text file
+app.post('/count-words', (req, res) => {
+
+  fs.readFile('data.txt', 'utf8', (err, data) => {
+    if (err) {
+      return res.status(500).send({ sts: false, message: 'Error reading the file' });
+    }
+    const words = data.split(/\s+/);
+    const wordCount = words.length;
+    res.send({ sts: true, message: `Total word count is ${wordCount}` });
+  });
 });
 
 app.listen(port, () => {
